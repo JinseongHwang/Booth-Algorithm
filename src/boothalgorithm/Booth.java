@@ -1,31 +1,28 @@
 package boothalgorithm;
 
-import java.util.Collections;
-import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Booth {
 
-    public static int bit = 0;
-    public static int operateStartIndex = 0;
-    public static ArrayList<Long> multiplicand = new ArrayList<>();
-    public static ArrayList<Long> multiplicandComplement;
-    public static ArrayList<Long> multiplier = new ArrayList<>();
-    public static ArrayList<Long> result = new ArrayList<>();
+    public int bit = 0;
+    public int operateStartIndex = 0;
+    public ArrayList<Long> multiplicand = new ArrayList<>();
+    public ArrayList<Long> multiplier = new ArrayList<>();
+    public ArrayList<Long> result = new ArrayList<>();
+    public ArrayList<Long> multiplicandComplement;
 
-    public void getUserInput() {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.print("Enter a bit(4, 8, 16, 32, 64): ");
-            bit = scanner.nextInt();
-            if (!(bit==4 || bit==8 || bit==16 || bit==32 || bit==64)) {
-                System.out.println("(4, 8, 16, 32, 64) 중 하나를 입력하세요.");
-                continue;
-            }
-            break;
-        }
-        System.out.print("Enter a multiplicand(피승수): ");
-        long m1 = scanner.nextLong();
+    public Booth(int bit, String multiplicandInput, String multiplierInput) {
+        this.bit = bit;
+        getUserInput(multiplicandInput, multiplierInput);
+        initResult();
+        printBinaryOperand();
+        startOperation();
+        printBinaryResult();
+    }
+
+    public void getUserInput(String multiplicandInput, String multiplierInput) {
+        long m1 = Long.parseLong(multiplicandInput);
         convertToBinary(true, Math.abs(m1));
         while (multiplicand.size() < 2 * bit) {
             multiplicand.add((long)0);
@@ -35,8 +32,7 @@ public class Booth {
         }
         Collections.reverse(multiplicand);
 
-        System.out.print("Enter a multiplier(승수): ");
-        long m2 = scanner.nextLong();
+        long m2 = Long.parseLong(multiplierInput);
         convertToBinary(false, Math.abs(m2));
         while (multiplier.size() < bit) {
             multiplier.add((long)0);
@@ -146,18 +142,23 @@ public class Booth {
 
     public long binaryToDecimal(ArrayList<Long> bin) {
         long sum = 0;
-        for (int i = 0; i < bin.size() - 1; i++) {
+        boolean isNegative = false;
+        if (bin.get(0) == 1) {
+            isNegative = true;
+        }
+        Collections.reverse(bin);
+        convertToComplement(bin);
+        Collections.reverse(bin);
+        for (int i = 0; i < bin.size(); i++) {
             if (bin.get(bin.size() - i - 1) == 1) {
                 sum += (Math.pow(2, i));
             }
         }
-        if (bin.get(0) == 1) {
-            sum -= (Math.pow(2, bin.size() - 1));
-        }
-        return sum;
+        if (isNegative) return -sum;
+        else return sum;
     }
 
-    public void printResults() {
+    public void printBinaryOperand() {
         System.out.print("Multiplicand   => ");
         for (int i = bit; i < multiplicand.size(); i++) {
             System.out.print(multiplicand.get(i));
@@ -174,6 +175,9 @@ public class Booth {
             }
         }
         System.out.println();
+    }
+
+    public void printBinaryResult() {
         System.out.print("Result Binary  => ");
         for (int i = 0; i < result.size(); i++) {
             System.out.print(result.get(i));
@@ -184,14 +188,4 @@ public class Booth {
         System.out.println();
         System.out.println("Result Decimal => " + binaryToDecimal(result));
     }
-
-    public static void main(String[] args) {
-
-        Booth booth = new Booth();
-        booth.getUserInput();
-        booth.initResult();
-        booth.startOperation();
-        booth.printResults();
-    }
-
 }
