@@ -1,148 +1,207 @@
 package test;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.Scanner;
+import java.util.ArrayList;
 
 public class BoothTestDrive {
 
-    private byte bit = 0; // 비트수
-    private long multiplicand = 0; // 피승수
-    private long multiplier = 0; // 승수
-    private StringBuilder binaryMultiplicand = new StringBuilder();
-    private StringBuilder binaryMultiplier = new StringBuilder();
+    public static int bit = 0;
+    public static int operateStartIndex = 0;
+    public static long multiplicandInput = 0;
+    public static long multiplierInput = 0;
+    public static ArrayList<Long> multiplicand = new ArrayList<>();
+    public static ArrayList<Long> multiplier = new ArrayList<>();
+    public static ArrayList<Long> result = new ArrayList<>();
+    public static ArrayList<Long> multiplicandComplement;
 
-    public long getMultiplicand() {
-        return multiplicand;
-    }
-
-    public long getMultiplier() {
-        return multiplier;
-    }
-
-    public String getBinaryMultiplicand() {
-        return binaryMultiplicand.toString();
-    }
-
-    public String getBinaryMultiplier() {
-        return binaryMultiplier.toString();
-    }
-
-    // 사용자에게 입력받음
-    public boolean getUserInput() {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        try {
+    public void getUserInput() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
             System.out.print("Enter a bit(4, 8, 16, 32, 64): ");
-            bit = Byte.parseByte(br.readLine());
-            System.out.print("Enter a multiplicand: ");
-            multiplicand = Long.parseLong(br.readLine());
-            System.out.print("Enter a multiplier: ");
-            multiplier = Long.parseLong(br.readLine());
-        } catch (IOException e) {
-            System.out.println("입력에 문제가 생겼습니다. 다시 입력해주세요.");
-            return false;
+            bit = scanner.nextInt();
+            if (!(bit==4 || bit==8 || bit==16 || bit==32 || bit==64)) {
+                System.out.println("(4, 8, 16, 32, 64) 중 하나를 입력하세요.");
+                continue;
+            }
+            break;
         }
-        return true;
+        System.out.print("Enter a multiplicand(피승수): ");
+        long m1 = scanner.nextLong();
+        convertToBinary(true, Math.abs(m1));
+        while (multiplicand.size() < 2 * bit) {
+            multiplicand.add((long)0);
+        }
+        if (m1 < 0) {
+            convertToComplement(multiplicand);
+        }
+        Collections.reverse(multiplicand);
+
+        System.out.print("Enter a multiplier(승수): ");
+        long m2 = scanner.nextLong();
+        convertToBinary(false, Math.abs(m2));
+        while (multiplier.size() < bit) {
+            multiplier.add((long)0);
+        }
+        if (m2 < 0) {
+            convertToComplement(multiplier);
+        }
+        Collections.reverse(multiplier);
     }
 
-    // 음수일 경우 2의 보수로 변환
-    public StringBuilder convertToNegative(String inputString) {
-        StringBuilder tmp = new StringBuilder();
-        for (int i = 0; i < inputString.length(); i++) {
-            if (inputString.charAt(i) == '0') {
-                tmp.append('1');
+    public void convertToBinary(boolean selector, long d) {
+        while (d > 0) {
+            long currentRest = d % 2;
+            if (selector) {
+                multiplicand.add(currentRest);
+            } else {
+                multiplier.add(currentRest);
             }
-            else {
-                tmp.append('0');
+            d /= 2;
+        }
+    }
+
+    public void convertToComplement(ArrayList<Long> arr) {
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr.get(i) == 0) {
+                arr.set(i, (long) 1);
+            } else {
+                arr.set(i, (long) 0);
             }
         }
-
-        int lastZeroIndex = 0;
-        for (int i = tmp.length() - 1; i >= 0; i--) {
-            if (tmp.charAt(i) == '0') {
-                tmp.setCharAt(i, '1');
-                lastZeroIndex = i;
+        int firstZeroIndex = 0;
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr.get(i) == 0) {
+                firstZeroIndex = i;
+                arr.set(i, (long) 1);
                 break;
             }
         }
-        // lastZeroIndex가 LSB가 아닐 경우
-        if (lastZeroIndex + 1 != tmp.length()) {
-            for (int i = lastZeroIndex + 1; i < tmp.length(); i++) {
-                tmp.setCharAt(i, '0');
-            }
+        for (int i = 0; i < firstZeroIndex; i++) {
+            arr.set(i, (long) 0);
         }
-        return tmp;
     }
 
-    // 입력받은 값을 2진수로 변환
-    public void convertToBinary() {
-        // 변환 과정에서 나머지 값을 저장하는 변수
-        String rest = "";
+    public void initResult() {
+        operateStartIndex = bit * 2 - 1;
+        for (int i = 0; i < bit * 2; i++) {
+            result.add((long) 0);
+        }
+    }
 
-        // 음수일 경우 일단 양수로 변환 후 나중에 보수를 취해준다.
-        boolean isNegativeMultiplicand = false;
-        boolean isNegativeMultiplier = false;
+    public void shiftLeft() {
+        operateStartIndex--;
+    }
 
-        if (multiplicand < 0) {
-            multiplicand *= -1;
-            isNegativeMultiplicand = true;
+    public void addOperation(ArrayList<Long> operand) {
+        boolean carry = false;
+        for (int resultIndex = operateStartIndex, multiplicandIndex = operand.size() - 1;
+             resultIndex >= 0;
+             resultIndex--, multiplicandIndex--) {
+            long currResultBit = result.get(resultIndex);
+            long currMultiplicandBit = operand.get(multiplicandIndex);
+            if (carry) {
+                if (currResultBit + currMultiplicandBit == 2) {
+                    result.set(resultIndex, (long)1);
+                    carry = true;
+                } else if (currResultBit + currMultiplicandBit == 1) {
+                    result.set(resultIndex, (long)0);
+                    carry = true;
+                } else {
+                    result.set(resultIndex, (long)1);
+                    carry = false;
+                }
+            } else {
+                if (currResultBit + currMultiplicandBit == 2) {
+                    result.set(resultIndex, (long)0);
+                    carry = true;
+                } else if (currResultBit + currMultiplicandBit == 1) {
+                    result.set(resultIndex, (long)1);
+                    carry = false;
+                } else {
+                    result.set(resultIndex, (long)0);
+                    carry = false;
+                }
+            }
         }
-        if (multiplier < 0) {
-            multiplier *= -1;
-            isNegativeMultiplier = true;
-        }
+    }
 
-        // 2진수로 변환
-        while (multiplicand > 0) {
-            rest = Long.toString(multiplicand % 2);
-            binaryMultiplicand.append(rest);
-            multiplicand /= 2;
-        }
-        // bit수 맞추기 위해 0추가
-        while (binaryMultiplicand.length() < bit) {
-            binaryMultiplicand.append('0');
-        }
+    public void startOperation() {
+        multiplicandComplement = new ArrayList<>(multiplicand);
+        Collections.reverse(multiplicandComplement);
+        convertToComplement(multiplicandComplement);
+        Collections.reverse(multiplicandComplement);
+        multiplier.add((long)0);
 
-        // multiplier에도 위와 동일한 연산 수행
-        while (multiplier > 0) {
-            rest = Long.toString(multiplier % 2);
-            binaryMultiplier.append(rest);
-            multiplier /= 2;
-        }
-        while (binaryMultiplier.length() < bit) {
-            binaryMultiplier.append('0');
-        }
+        for (int i = multiplier.size() - 1; i > 0; i--) {
+            long preBit = multiplier.get(i - 1);
+            long postBit = multiplier.get(i);
 
-        // 문자열 뒤집기
-        binaryMultiplicand.reverse();
-        binaryMultiplier.reverse();
+            if (preBit == 0 && postBit == 1) {
+                addOperation(multiplicand);
+            } else if (preBit == 1 && postBit == 0) {
+                addOperation(multiplicandComplement);
+            }
+            shiftLeft();
+        }
+    }
 
-        if (isNegativeMultiplicand) {
-            StringBuilder tmp = convertToNegative(binaryMultiplicand.toString());
-            binaryMultiplicand.setLength(0);
-            binaryMultiplicand = tmp;
+    public long binaryToDecimal(ArrayList<Long> bin) {
+        long sum = 0;
+        boolean isNegative = false;
+        if (bin.get(0) == 1) {
+            isNegative = true;
         }
-        if (isNegativeMultiplier) {
-            StringBuilder tmp = convertToNegative(binaryMultiplier.toString());
-            binaryMultiplier.setLength(0);
-            binaryMultiplier = tmp;
+        Collections.reverse(bin);
+        convertToComplement(bin);
+        Collections.reverse(bin);
+        for (int i = 0; i < bin.size(); i++) {
+            if (bin.get(bin.size() - i - 1) == 1) {
+                sum += (Math.pow(2, i));
+            }
         }
+        if (isNegative) return -sum;
+        else return sum;
+    }
+
+    public void printBinaryOperand() {
+        System.out.print("Multiplicand   => ");
+        for (int i = bit; i < multiplicand.size(); i++) {
+            System.out.print(multiplicand.get(i));
+            if (i > 0 && (i + 1) % 4 == 0) {
+                System.out.print(" ");
+            }
+        }
+        System.out.println();
+        System.out.print("Multiplier     => ");
+        for (int i = 0; i < multiplier.size() - 1; i++) {
+            System.out.print(multiplier.get(i));
+            if (i > 0 && (i + 1) % 4 == 0) {
+                System.out.print(" ");
+            }
+        }
+        System.out.println();
+    }
+
+    public void printBinaryResult() {
+        System.out.print("Result Binary  => ");
+        for (int i = 0; i < result.size(); i++) {
+            System.out.print(result.get(i));
+            if (i > 0 && (i + 1) % 4 == 0) {
+                System.out.print(" ");
+            }
+        }
+        System.out.println();
+        System.out.println("Result Decimal => " + binaryToDecimal(result));
     }
 
     public static void main(String[] args) {
-
         BoothTestDrive booth = new BoothTestDrive();
-
-        // 올바른 입력이 나올 때 까지 반복
-        while (true) {
-            if (booth.getUserInput()) break;
-        }
-
-        booth.convertToBinary();
-
-        System.out.println(booth.getBinaryMultiplicand());
-        System.out.println(booth.getBinaryMultiplier());
-
+        booth.getUserInput();
+        booth.initResult();
+        booth.printBinaryOperand();
+        booth.startOperation();
+        booth.printBinaryResult();
     }
 
 }
