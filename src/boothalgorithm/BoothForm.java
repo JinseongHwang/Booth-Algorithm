@@ -1,6 +1,7 @@
 package boothalgorithm;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import boothalgorithm.Booth;
 
 public class BoothForm {
+    private JFrame frame;
     private JPanel mainPanel;
     private JRadioButton bit4Btn;
     private JRadioButton bit8Btn;
@@ -20,8 +22,7 @@ public class BoothForm {
     private JButton executeBtn;
     private JButton exitBtn;
     private JLabel noticeLabel;
-
-    public static BoothForm boothForm = new BoothForm();
+    private JScrollPane scroll;
 
     public int formBit = 0;
 
@@ -70,11 +71,21 @@ public class BoothForm {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Booth Algorithm GUI");
-        frame.setContentPane(boothForm.mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        BoothForm boothForm = new BoothForm();
+        boothForm.frame = new JFrame("Booth Algorithm GUI");
+
+//        boothForm.scroll = new JScrollPane();
+//        boothForm.scroll.setEnabled(true);
+//        boothForm.scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//        boothForm.mainPanel.add(boothForm.scroll, BorderLayout.CENTER);
+
+        boothForm.frame.setContentPane(boothForm.mainPanel);
+
+//        boothForm.scroll.setViewportView(boothForm.resultArea);
+
+        boothForm.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        boothForm.frame.pack();
+        boothForm.frame.setVisible(true);
     }
 
 }

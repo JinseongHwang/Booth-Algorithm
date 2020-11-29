@@ -21,7 +21,7 @@ public class Booth {
         initResult();
         printBinaryOperand();
         startOperation();
-        printBinaryResult();
+        printDecimalResult();
     }
 
     public ArrayList<String> writeInResultArea() {
@@ -32,12 +32,24 @@ public class Booth {
         resultList.add(str);
     }
 
-    public void writeArr(ArrayList<Long> arr, int startIndex, int endIndex) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = startIndex; i <= endIndex; i++) {
-            sb.append(arr.get(i));
+//    public double log2(double x) {
+//        return Math.log(x) / Math.log(2);
+//    }
+
+    public void writeArr(ArrayList<Long> arr, int startIndex) {
+        //currLine.append("Multiplier     => ");
+        currLine.append("Add Operation  => ");
+        for (int i = 0; i < startIndex + (bit / 4) - 1; i++) {
+            currLine.append(" ");
         }
-        resultList.add(sb.toString());
+        for (int i = startIndex; i < startIndex + bit; i++) {
+            currLine.append(arr.get(i));
+            if (i > 0 && (i + 1) % 4 == 0) {
+                currLine.append(" ");
+            }
+        }
+        resultList.add(currLine.toString());
+        currLine.setLength(0);
     }
 
     public void getUserInput(String multiplicandInput, String multiplierInput) {
@@ -150,12 +162,23 @@ public class Booth {
             long preBit = multiplier.get(i - 1);
             long postBit = multiplier.get(i);
 
+            printBinaryResult();
+
             if (preBit == 0 && postBit == 1) {
+                writeArr(multiplicand, operateStartIndex - bit + 1);
                 addOperation(multiplicand);
             } else if (preBit == 1 && postBit == 0) {
+                writeArr(multiplicandComplement, operateStartIndex - bit + 1);
                 addOperation(multiplicandComplement);
+            } else {
+                ArrayList<Long> zeroArr = new ArrayList<>();
+                for (int j = 0; j < 2 * bit; j++) {
+                    zeroArr.add((long)0);
+                }
+                writeArr(zeroArr, operateStartIndex - bit + 1);
             }
             shiftLeft();
+            printLine();
         }
     }
 
@@ -227,7 +250,9 @@ public class Booth {
         //System.out.println();
         writeStr(currLine.toString());
         currLine.setLength(0);
+    }
 
+    public void printDecimalResult() {
         currLine.append("Result Decimal => ");
         currLine.append(Long.toString(binaryToDecimal(result)));
         //System.out.println("Result Decimal => " + binaryToDecimal(result));
