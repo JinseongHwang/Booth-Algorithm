@@ -11,6 +11,9 @@ public class Booth {
     public ArrayList<Long> multiplier = new ArrayList<>();
     public ArrayList<Long> result = new ArrayList<>();
     public ArrayList<Long> multiplicandComplement;
+    public ArrayList<String> resultList = new ArrayList<>();
+
+    StringBuilder currLine = new StringBuilder();
 
     public Booth(int bit, String multiplicandInput, String multiplierInput) {
         this.bit = bit;
@@ -19,6 +22,22 @@ public class Booth {
         printBinaryOperand();
         startOperation();
         printBinaryResult();
+    }
+
+    public ArrayList<String> writeInResultArea() {
+        return resultList;
+    }
+
+    public void writeStr(String str) {
+        resultList.add(str);
+    }
+
+    public void writeArr(ArrayList<Long> arr, int startIndex, int endIndex) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = startIndex; i <= endIndex; i++) {
+            sb.append(arr.get(i));
+        }
+        resultList.add(sb.toString());
     }
 
     public void getUserInput(String multiplicandInput, String multiplierInput) {
@@ -145,10 +164,10 @@ public class Booth {
         boolean isNegative = false;
         if (bin.get(0) == 1) {
             isNegative = true;
+            Collections.reverse(bin);
+            convertToComplement(bin);
+            Collections.reverse(bin);
         }
-        Collections.reverse(bin);
-        convertToComplement(bin);
-        Collections.reverse(bin);
         for (int i = 0; i < bin.size(); i++) {
             if (bin.get(bin.size() - i - 1) == 1) {
                 sum += (Math.pow(2, i));
@@ -158,34 +177,62 @@ public class Booth {
         else return sum;
     }
 
+    public void printLine() {
+        writeStr("----------------------------------------------------------------------------------------" +
+                 "----------------------------------------------------------------------------------------");
+    }
+
     public void printBinaryOperand() {
-        System.out.print("Multiplicand   => ");
+        currLine.append("Multiplicand   => ");
+        //System.out.print("Multiplicand   => ");
         for (int i = bit; i < multiplicand.size(); i++) {
-            System.out.print(multiplicand.get(i));
+            currLine.append(multiplicand.get(i));
+            //System.out.print(multiplicand.get(i));
             if (i > 0 && (i + 1) % 4 == 0) {
-                System.out.print(" ");
+                currLine.append(" ");
+                //System.out.print(" ");
             }
         }
-        System.out.println();
-        System.out.print("Multiplier     => ");
-        for (int i = 0; i < multiplier.size() - 1; i++) {
-            System.out.print(multiplier.get(i));
+        //System.out.println();
+        writeStr(currLine.toString());
+        currLine.setLength(0);
+
+        currLine.append("Multiplier     => ");
+        //System.out.print("Multiplier     => ");
+        for (int i = 0; i < multiplier.size(); i++) {
+            currLine.append(multiplier.get(i));
+            //System.out.print(multiplier.get(i));
             if (i > 0 && (i + 1) % 4 == 0) {
-                System.out.print(" ");
+                currLine.append(" ");
+                //System.out.print(" ");
             }
         }
-        System.out.println();
+        //System.out.println();
+        writeStr(currLine.toString());
+        currLine.setLength(0);
+        printLine();
     }
 
     public void printBinaryResult() {
-        System.out.print("Result Binary  => ");
+        currLine.append("Result Binary  => ");
+        //System.out.print("Result Binary  => ");
         for (int i = 0; i < result.size(); i++) {
-            System.out.print(result.get(i));
+            currLine.append(result.get(i));
+            //System.out.print(result.get(i));
             if (i > 0 && (i + 1) % 4 == 0) {
-                System.out.print(" ");
+                currLine.append(" ");
+                //System.out.print(" ");
             }
         }
-        System.out.println();
-        System.out.println("Result Decimal => " + binaryToDecimal(result));
+        //System.out.println();
+        writeStr(currLine.toString());
+        currLine.setLength(0);
+
+        currLine.append("Result Decimal => ");
+        currLine.append(Long.toString(binaryToDecimal(result)));
+        //System.out.println("Result Decimal => " + binaryToDecimal(result));
+        writeStr(currLine.toString());
+        currLine.setLength(0);
+        printLine();
     }
 }

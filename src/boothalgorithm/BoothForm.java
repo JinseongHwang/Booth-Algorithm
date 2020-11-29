@@ -3,6 +3,8 @@ package boothalgorithm;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 import boothalgorithm.Booth;
 
 public class BoothForm {
@@ -22,10 +24,6 @@ public class BoothForm {
     public static BoothForm boothForm = new BoothForm();
 
     public int formBit = 0;
-
-    public void writeInResultArea(String inputText) {
-        resultArea.append(inputText);
-    }
 
     public BoothForm() {
 
@@ -55,6 +53,10 @@ public class BoothForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Booth booth = new Booth(formBit, multiplicandInputField.getText(), multiplierInputField.getText());
+                ArrayList<String> paramResult = booth.writeInResultArea();
+                for (String elem : paramResult) {
+                    resultArea.append(elem + "\n");
+                }
             }
         });
 
