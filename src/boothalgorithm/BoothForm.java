@@ -6,8 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import boothalgorithm.Booth;
-
 public class BoothForm {
     private JFrame frame;
     private JPanel mainPanel;
@@ -24,9 +22,35 @@ public class BoothForm {
     private JLabel noticeLabel;
     private JScrollPane scroll;
 
-    public int formBit = 0;
+    public static int formBit = 0;
 
-    public BoothForm() {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Booth Algorithm GUI - 1723940 황진성");
+        JPanel mainPanel = new JPanel();
+        JRadioButton bit4Btn = new JRadioButton("4bit");
+        JRadioButton bit8Btn = new JRadioButton("8bit");
+        JRadioButton bit16Btn = new JRadioButton("16bit");
+        JRadioButton bit32Btn = new JRadioButton("32bit");
+        JRadioButton bit64Btn = new JRadioButton("64bit");
+        JTextArea resultArea = new JTextArea(20, 100);
+        JTextField multiplicandInputField = new JTextField(100);
+        JTextField multiplierInputField = new JTextField(100);
+        JButton executeBtn = new JButton("실행");
+        JButton exitBtn = new JButton("종료");
+        JLabel noticeLabel = new JLabel("반드시 bit, 피승수, 승수를 입력 후 실행 버튼을 눌려주세요!");
+        JLabel spaceLabel = new JLabel("                                                                          " +
+                "                                                                                                       " +
+                "                                                                                                       " +
+                "                                                                                                       " +
+                "                                                                                                       " +
+                "                                                                                                       " +
+                "                                                                                                       ");
+        JScrollPane scroll = new JScrollPane(resultArea);
+
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        // ------------------------------------------ Event Listener - START
 
         ActionListener listener = new ActionListener() {
             @Override
@@ -68,24 +92,32 @@ public class BoothForm {
             }
         });
 
-    }
+        // ------------------------------------------ Event Listener - END
 
-    public static void main(String[] args) {
-        BoothForm boothForm = new BoothForm();
-        boothForm.frame = new JFrame("Booth Algorithm GUI");
+        mainPanel.add(noticeLabel);
+        mainPanel.add(spaceLabel);
 
-//        boothForm.scroll = new JScrollPane();
-//        boothForm.scroll.setEnabled(true);
-//        boothForm.scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-//        boothForm.mainPanel.add(boothForm.scroll, BorderLayout.CENTER);
+        mainPanel.add(bit4Btn);
+        mainPanel.add(bit8Btn);
+        mainPanel.add(bit16Btn);
+        mainPanel.add(bit32Btn);
+        mainPanel.add(bit64Btn);
+        mainPanel.add(spaceLabel);
 
-        boothForm.frame.setContentPane(boothForm.mainPanel);
+        mainPanel.add(multiplicandInputField);
+        mainPanel.add(multiplierInputField);
+        mainPanel.add(scroll);
+        mainPanel.add(BorderLayout.SOUTH, executeBtn);
+        mainPanel.add(BorderLayout.SOUTH, exitBtn);
 
-//        boothForm.scroll.setViewportView(boothForm.resultArea);
+        // frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
+        frame.setContentPane(mainPanel);
 
-        boothForm.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        boothForm.frame.pack();
-        boothForm.frame.setVisible(true);
+        // ------------------------------------------ vital functions for GUI program - START
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+        // ------------------------------------------ vital functions for GUI program - END
     }
 
 }

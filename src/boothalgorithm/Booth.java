@@ -187,9 +187,11 @@ public class Booth {
         boolean isNegative = false;
         if (bin.get(0) == 1) {
             isNegative = true;
+            // 2의 보수로 바꿔줌 - START
             Collections.reverse(bin);
             convertToComplement(bin);
             Collections.reverse(bin);
+            // 2의 보수로 바꿔줌 - END
         }
         for (int i = 0; i < bin.size(); i++) {
             if (bin.get(bin.size() - i - 1) == 1) {
