@@ -46,19 +46,19 @@ public class BoothV2 {
         } else {
             currLine.append("Only Shift     => ");
         }
-        for (int i = 0; i < startIndex + (bit / 4) - 1; i++) {
+        for (int i = 0; i < startIndex; i++) {
             currLine.append(" ");
         }
-        for (int i = startIndex; i < startIndex + bit; i++) {
+        for (int i = bit; i < 2 * bit; i++) {
             //currLine.append(arr.get(i));
             if (type < 3) {
                 currLine.append(multiplicand.get(i));
             } else {
                 currLine.append("0");
             }
-            if (i > 0 && (i + 1) % 4 == 0) {
-                currLine.append(" ");
-            }
+//            if (i > 0 && (i + 1) % 4 == 0) {
+//                currLine.append(" ");
+//            }
         }
         resultList.add(currLine.toString());
         currLine.setLength(0);
@@ -221,10 +221,10 @@ public class BoothV2 {
         for (int i = bit; i < multiplicand.size(); i++) {
             currLine.append(multiplicand.get(i));
             //System.out.print(multiplicand.get(i));
-            if (i > 0 && (i + 1) % 4 == 0) {
-                currLine.append(" ");
-                //System.out.print(" ");
-            }
+//            if (i > 0 && (i + 1) % 4 == 0) {
+//                currLine.append(" ");
+//                //System.out.print(" ");
+//            }
         }
         //System.out.println();
         writeStr(currLine.toString());
@@ -235,10 +235,10 @@ public class BoothV2 {
         for (int i = 0; i < multiplier.size(); i++) {
             currLine.append(multiplier.get(i));
             //System.out.print(multiplier.get(i));
-            if (i > 0 && (i + 1) % 4 == 0) {
-                currLine.append(" ");
-                //System.out.print(" ");
-            }
+//            if (i > 0 && (i + 1) % 4 == 0) {
+//                currLine.append(" ");
+//                //System.out.print(" ");
+//            }
         }
         //System.out.println();
         writeStr(currLine.toString());
@@ -252,10 +252,10 @@ public class BoothV2 {
         for (int i = 0; i < result.size(); i++) {
             currLine.append(result.get(i));
             //System.out.print(result.get(i));
-            if (i > 0 && (i + 1) % 4 == 0) {
-                currLine.append(" ");
-                //System.out.print(" ");
-            }
+//            if (i > 0 && (i + 1) % 4 == 0) {
+//                currLine.append(" ");
+//                //System.out.print(" ");
+//            }
         }
         //System.out.println();
         writeStr(currLine.toString());
