@@ -12,12 +12,13 @@ public class BoothFormV2 {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Booth Algorithm GUI - 1723940 황진성");
         JPanel mainPanel = new JPanel();
+        ButtonGroup radioGroup = new ButtonGroup();
         JRadioButton bit4Btn = new JRadioButton("4bit");
         JRadioButton bit8Btn = new JRadioButton("8bit");
         JRadioButton bit16Btn = new JRadioButton("16bit");
         JRadioButton bit32Btn = new JRadioButton("32bit");
         JRadioButton bit64Btn = new JRadioButton("64bit");
-        JTextArea resultArea = new JTextArea(30, 100);
+        JTextArea resultArea = new JTextArea(30, 180);
         JTextField multiplicandInputField = new JTextField(30);
         JTextField multiplierInputField = new JTextField(30);
         JButton executeBtn = new JButton("실행");
@@ -31,6 +32,12 @@ public class BoothFormV2 {
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         resultArea.setFont(new Font("D2Coding ligature", Font.BOLD, 15));
+
+        radioGroup.add(bit4Btn);
+        radioGroup.add(bit8Btn);
+        radioGroup.add(bit16Btn);
+        radioGroup.add(bit32Btn);
+        radioGroup.add(bit64Btn);
 
         // ------------------------------------------ Event Listener - START
 
